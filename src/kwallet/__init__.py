@@ -32,6 +32,13 @@ read_method= {
     }
 
 
+write_method= {
+    TYPE_UNKNOWN:api.readEntry,
+    TYPE_PASSWORD: api.writePassword,
+    TYPE_BINARY: api.readEntry,
+    TYPE_MAP:api.writeMap
+    }
+
 #module functions
 
 def get_users():api.users()
@@ -176,7 +183,7 @@ class Entry(object):
     def set_type(self, type):
         self.__type=type
         api.writeEntry( self.wallet.handle,
-                            self.folder,
+                            self.folder.name,
                             self.name,
                             self.value,
                             self.__type,
@@ -184,7 +191,6 @@ class Entry(object):
 
 
     def get_value(self):
-
         print read_method[self.type].func_name
         bytes = read_method[self.type](self.wallet.handle,
                             self.folder.name,
@@ -201,20 +207,19 @@ class Entry(object):
 
     def set_value(self,object):
         if type(object) is dict:
-            type= TYPE_MAP
+            typ=TYPE_MAP
             binary = dictToMap(object)
         elif type(object) in ( str, unicode ):
-            type=TYPE_PASSWORD
-            binary = unicodeToBytes(object)
+            typ=TYPE_PASSWORD
+            binary = (object)
         else:
-            type=TYPE_UNKNOWN
+            typ=TYPE_UNKNOWN
             binary = unicodeToBytes(repr(object))
 
-        return api.writeEntry( self.wallet.handle,
-                            self.folder,
+        return write_method[typ]( self.wallet.handle,
+                            self.folder.name,
                             self.name,
                             binary,
-                            self.type,
                             self.wallet.appName)
 
     value= property(get_value, set_value, None, "")

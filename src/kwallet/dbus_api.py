@@ -253,7 +253,7 @@ def writeEntry( handle, folder, key, value, appid ):
     '''method int org.kde.KWallet.writeEntry(int handle, QString folder, QString key, QByteArray value, QString appid)'''
     return _proxy.writeEntry(handle, folder, key, value, appid)
     
-def writeEntry( handle, folder, key, value, entryType, appid ):
+def writeEntryT( handle, folder, key, value, entryType, appid ):
     '''method int org.kde.KWallet.writeEntry(int handle, QString folder, QString key, QByteArray value, int entryType, QString appid)'''
     return _proxy.writeEntry(handle, folder, key, value, entryType, appid)
     
