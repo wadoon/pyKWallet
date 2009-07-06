@@ -191,7 +191,7 @@ class Entry(object):
 
 
     def get_value(self):
-        print read_method[self.type].func_name
+
         bytes = read_method[self.type](self.wallet.handle,
                             self.folder.name,
                             self.name,

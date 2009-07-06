@@ -1,0 +1,62 @@
+#! /usr/bin/python
+
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+__author__="Alexander Weigl <alexweigl@gmail.com>"
+__date__ ="$06.07.2009 13:13:18$"
+
+
+from optparse import OptionParser
+from kwallet import Wallet, Folder, Entry
+
+if __name__ == "__main__":
+    options = OptionParser()
+    options.add_option('-w', '--wallet', help="name of the wallet",
+                       default="kdewallet", dest="wallet" )
+    
+    options.add_option('-f','--folder', help="name of the folder",
+                       default="Passwords", dest="folder")
+
+    options.add_option('-e','--entry', help="entry name",
+                       default=None, dest="entry")
+
+
+    options.add_option('-p','--password', help="set the password",
+                       default=None, dest="password")
+
+    options.add_option('-s','--setpwd', help="set the password interactive",
+                       default=False, dest="setpwdinter", action="store_true")
+
+    options.add_option('','--askpwd', help="return password from kwallet, if no password was set, programm asked after password and set it",
+                       default=False, dest="askpwd", action="store_true")
+
+
+    opts , args =  options.parse_args()
+    
+    if opts.entry is None:
+        try:
+            wallet, folder, entry = args[0].split(':')
+        except:
+            import sys
+            options.print_help()
+            sys.exit(1)
+    else:
+        wallet, folder, entry = opts.wallet, opts.folder, opts.entry
+
+    e=Wallet(wallet).openFolder(folder).openEntry(entry) 
+    if opts.password:
+        e.value = opts.password
+    elif opts.setpwdinter:
+        import getpass
+        e.value = getpass.getpass()
+    elif opts.askpwd:
+        if not e.value:
+            import getpass
+            e.value = getpass.getpass()
+        print Wallet(wallet).openFolder(folder).openEntry(entry).value
+    else:
+        print e.value
+        
+
+    
